@@ -20,13 +20,11 @@ class AuthRepository extends BaseAuthRepository {
   Future<AppResponse<AuthUser?>> login(LoginRequest request) async {
     final response =
         await _dioClient.post(Endpoints.login, data: request.toJson());
-    var result = AppResponse<AuthUser?>.fromJson(
+    return AppResponse<AuthUser?>.fromJson(
         response.data,
             (dynamic json) => response.data['success'] && json != null
             ? AuthUser.fromJson(json)
             : null);
-    eLog(result);
-    return result;
   }
 
   @override
