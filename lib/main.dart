@@ -19,6 +19,7 @@ import 'package:untitled1/screens/splash/splash_screen.dart';
 import 'bloc/category/category_bloc.dart';
 import 'bloc/guest/guest_bloc.dart';
 import 'bloc/question/question_bloc.dart';
+import 'bloc/question_answer/question_answer_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,6 +70,12 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) =>
                 QuestionBloc(
+                  questionRepository: context.read<QuestionRepository>(),
+                ),
+          ),
+          BlocProvider(
+            create: (context) =>
+                QuestionAnswerBloc(
                   questionRepository: context.read<QuestionRepository>(),
                 ),
           ),

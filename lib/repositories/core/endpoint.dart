@@ -17,6 +17,7 @@ class Endpoints {
 
   static const _question = "$_apiVersion/question";
   static const questions = "$_question/category/3";
+  static const checkQuestion = "$_question/check";
 
   /// Note
   static const _baseNote = "$_apiVersion/note";

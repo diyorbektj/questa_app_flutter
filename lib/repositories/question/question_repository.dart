@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:untitled1/models/app_response.dart';
+import 'package:untitled1/models/question_answer_model.dart';
 import 'package:untitled1/repositories/core/endpoint.dart';
 
 import '../../models/question_model.dart';
@@ -25,5 +26,16 @@ class QuestionRepository extends BaseQuestionRepository {
       }
       return null;
     });
+  }
+
+  @override
+  Future<AppResponse<QuestionAnswerModel?>> checkAnswer(int id, String answer) async{
+    final response =
+        await _dioClient.post(Endpoints.checkQuestion, data: {'id': id, 'answer': answer});
+    return AppResponse<QuestionAnswerModel?>.fromJson(
+        response.data,
+            (dynamic json) => response.data['success'] && json != null
+            ? QuestionAnswerModel.fromJson(json)
+            : null);
   }
 }

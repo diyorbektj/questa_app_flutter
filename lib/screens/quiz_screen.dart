@@ -2,9 +2,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:untitled1/models/question_answer_model.dart';
 import 'package:untitled1/screens/success_screen.dart';
 
 import '../bloc/question/question_bloc.dart';
+import '../bloc/question_answer/question_answer_bloc.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({Key? key, required this.title}) : super(key: key);
@@ -20,22 +22,8 @@ class QuizScreen extends StatefulWidget {
 
 class _QuizScreenState extends State<QuizScreen> {
   final PageController _pageController = PageController();
-  final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
-    foregroundColor: Colors.green,
-    backgroundColor: Colors.white,
-    elevation: 0.0,
-    minimumSize: const Size(340, 50),
-    padding: const EdgeInsets.symmetric(horizontal: 16),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(10)),
-    ),
-    side: const BorderSide(
-        width: 2.0,
-        color: Colors.grey
-    ),
-  );
 
-  int count = 5;
+  int count = 10;
   String minute = "0";
   String second = "0";
   int page = 0;
@@ -57,7 +45,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   MaterialPageRoute(builder: (context) => const SuccessScreen()),
                 );
             }
-            count=5;
+            count=10;
             _pageController.nextPage(
                 duration: const Duration(milliseconds: 250), curve: Curves.ease);
           }else{
@@ -116,7 +104,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                 controller: _pageController,
                                 onPageChanged: (index) {
                                   page++;
-                                  count = 5;
+                                  count = 10;
                                 },
                                 itemCount: state.questions.length,
                                 itemBuilder: (context, index) => Center(
@@ -141,19 +129,19 @@ class _QuizScreenState extends State<QuizScreen> {
                                                 ),
                                               ),
                                               SizedBox(height: MediaQuery.of(context).size.height / 20,),
-                                              _buttonOption(state.questions[index]!.A),
+                                              _buttonOption(state.questions[index]!.A, state.questions[index]!.id, "A"),
                                               const SizedBox(
                                                 height: 15
                                               ),
-                                              _buttonOption(state.questions[index]!.B),
+                                              _buttonOption(state.questions[index]!.B, state.questions[index]!.id, "B"),
                                               const SizedBox(
                                                   height: 15
                                               ),
-                                              _buttonOption(state.questions[index]!.C),
+                                              _buttonOption(state.questions[index]!.C, state.questions[index]!.id, "C"),
                                               const SizedBox(
                                                   height: 15
                                               ),
-                                              _buttonOption(state.questions[index]!.D),
+                                              _buttonOption(state.questions[index]!.D, state.questions[index]!.id, "D"),
                                               const SizedBox(
                                                   height: 15
                                               ),
@@ -208,14 +196,33 @@ class _QuizScreenState extends State<QuizScreen> {
           ),
         );
   }
-  Widget _buttonOption(String title){
-    return ElevatedButton(
-      onPressed: () {
-        _pageController.nextPage(
-            duration: const Duration(milliseconds: 250), curve: Curves.ease);
+  Widget _buttonOption(String title, int id, String answer){
+    return BlocConsumer<QuestionAnswerBloc, QuestionAnswerState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return ElevatedButton(
+          onPressed: () {
+            context.read<QuestionAnswerBloc>().add(CheckAnswer(id, answer));
+            _pageController.nextPage(
+                duration: const Duration(milliseconds: 250), curve: Curves.ease);
+          },
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.green,
+            backgroundColor: state.isTrue ? Colors.green : Colors.white,
+            elevation: 0.0,
+            minimumSize: const Size(340, 50),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            side: const BorderSide(
+                width: 2.0,
+                color: Colors.grey
+            ),
+          ),
+          child: Text(title, style: const TextStyle(color: Colors.black),),
+        );
       },
-      style: raisedButtonStyle,
-      child: Text(title, style: const TextStyle(color: Colors.black),),
     );
   }
 }
